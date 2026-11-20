@@ -1,0 +1,45 @@
+# Redpanda configuration for hackathon
+# This is optional - the docker-compose command overrides most settings
+# Mount this file if you need custom configuration
+
+redpanda:
+  # Network
+  kafka_api:
+    - address: 0.0.0.0
+      port: 9092
+      name: internal
+    - address: 0.0.0.0
+      port: 19092
+      name: external
+  rpc_server:
+    address: 0.0.0.0
+    port: 33145
+
+  # Schema Registry
+  schema_registry:
+    address: 0.0.0.0
+    port: 8081
+
+  # HTTP Proxy (PandaProxy)
+  pandaproxy_api:
+    address: 0.0.0.0
+    port: 8082
+
+  # Developer mode (single node, no persistence concerns)
+  developer_mode: true
+
+  # Topic defaults
+  default_topic_partitions: 3
+  default_topic_replications: 1
+
+  # Resource limits (adjust based on Docker Desktop settings)
+  memory:
+    buffer_pool_bytes: 536870912  # 512MB
+  cpu:
+    cores: 4
+
+  # Logging
+  log_level: info
+
+  # Storage
+  data_directory: /var/lib/redpanda/data

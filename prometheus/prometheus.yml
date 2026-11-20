@@ -1,0 +1,29 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'redpanda'
+    static_configs:
+      - targets: ['redpanda:9644']  # Redpanda metrics endpoint
+
+  - job_name: 'risingwave'
+    static_configs:
+      - targets: ['risingwave:5691']
+
+  - job_name: 'scorer'
+    static_configs:
+      - targets: ['scorer:8000']
+    metrics_path: '/metrics'
+
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres:9187']  # Requires postgres_exporter
+
+  - job_name: 'generator'
+    static_configs:
+      - targets: ['generator:8080']
