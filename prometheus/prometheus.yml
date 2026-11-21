@@ -7,9 +7,9 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
 
-  - job_name: 'redpanda'
+  - job_name: 'kafka'
     static_configs:
-      - targets: ['redpanda:9644']  # Redpanda metrics endpoint
+      - targets: ['kafka:9092']  # Kafka doesn't expose Prometheus metrics by default; use JMX exporter if needed
 
   - job_name: 'risingwave'
     static_configs:
@@ -20,10 +20,11 @@ scrape_configs:
       - targets: ['scorer:8000']
     metrics_path: '/metrics'
 
-  - job_name: 'postgres'
-    static_configs:
-      - targets: ['postgres:9187']  # Requires postgres_exporter
-
   - job_name: 'generator'
     static_configs:
       - targets: ['generator:8080']
+
+  # PostgreSQL requires postgres_exporter sidecar (not included for simplicity)
+  # - job_name: 'postgres'
+  #   static_configs:
+  #     - targets: ['postgres-exporter:9187']

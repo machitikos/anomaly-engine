@@ -472,6 +472,351 @@
         ],
         "title": "Max Impossible Travel Speed",
         "type": "stat"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "lineWidth": 1
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "ops"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 8,
+          "x": 0,
+          "y": 24
+        },
+        "id": 9,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "expr": "rate(scorer_decisions_total{action=\"APPROVE\"}[5m])",
+            "legendFormat": "APPROVE",
+            "refId": "A"
+          },
+          {
+            "expr": "rate(scorer_decisions_total{action=\"CHALLENGE\"}[5m])",
+            "legendFormat": "CHALLENGE",
+            "refId": "B"
+          },
+          {
+            "expr": "rate(scorer_decisions_total{action=\"BLOCK\"}[5m])",
+            "legendFormat": "BLOCK",
+            "refId": "C"
+          },
+          {
+            "expr": "rate(scorer_decisions_total{action=\"REVIEW\"}[5m])",
+            "legendFormat": "REVIEW",
+            "refId": "D"
+          }
+        ],
+        "title": "Decision Actions Rate",
+        "type": "timeseries"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 0.05
+                },
+                {
+                  "color": "red",
+                  "value": 0.1
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 8,
+          "y": 24
+        },
+        "id": 10,
+        "options": {
+          "displayMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "showUnfilled": true,
+          "textMode": "value"
+        },
+        "pluginVersion": "8.0.0",
+        "targets": [
+          {
+            "expr": "rate(scorer_decisions_total{action=\"BLOCK\"}[5m]) / rate(scorer_decisions_total[5m])",
+            "refId": "A"
+          }
+        ],
+        "title": "Block Rate",
+        "type": "stat"
+      },
+      {
+        "datasource": "RisingWave",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "lineWidth": 1
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 14,
+          "y": 24
+        },
+        "id": 11,
+        "options": {
+          "displayMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "showUnfilled": true,
+          "textMode": "value"
+        },
+        "pluginVersion": "8.0.0",
+        "targets": [
+          {
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT COUNT(*) as total, SUM(CASE WHEN label = 1 AND score > 0.7 THEN 1 ELSE 0 END) as tp, SUM(CASE WHEN label = 0 AND score > 0.7 THEN 1 ELSE 0 END) as fp FROM feature_vector WHERE ts > NOW() - INTERVAL '1 HOUR' AND model_version IS NOT NULL",
+            "refId": "A"
+          }
+        ],
+        "title": "Model Precision (last 1hr)",
+        "type": "stat"
+      },
+      {
+        "datasource": "RisingWave",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "yellow",
+                  "value": 0.1
+                },
+                {
+                  "color": "red",
+                  "value": 0.2
+                }
+              ]
+            },
+            "unit": "percentunit"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 6,
+          "x": 20,
+          "y": 24
+        },
+        "id": 12,
+        "options": {
+          "displayMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": ["lastNotNull"],
+            "fields": "",
+            "values": false
+          },
+          "showUnfilled": true,
+          "textMode": "value"
+        },
+        "pluginVersion": "8.0.0",
+        "targets": [
+          {
+            "format": "table",
+            "rawQuery": true,
+            "rawSql": "SELECT SUM(CASE WHEN label = 0 AND score > 0.7 THEN 1 ELSE 0 END)::float / NULLIF(SUM(CASE WHEN label = 0 THEN 1 ELSE 0 END), 0) as fpr FROM feature_vector WHERE ts > NOW() - INTERVAL '1 HOUR'",
+            "refId": "A"
+          }
+        ],
+        "title": "False Positive Rate",
+        "type": "stat"
+      },
+      {
+        "datasource": "RisingWave",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "lineWidth": 1
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 32
+        },
+        "id": 13,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "format": "time_series",
+            "rawQuery": true,
+            "rawSql": "SELECT window_start as time, AVG(amount_zscore) as avg_zscore, AVG(speed_kmh) as avg_speed, AVG(device_trusted)::float as device_trust_rate FROM feature_vector WHERE ts > NOW() - INTERVAL '6 HOURS' GROUP BY window_start ORDER BY window_start",
+            "refId": "A"
+          },
+          {
+            "format": "time_series",
+            "rawQuery": true,
+            "rawSql": "SELECT window_start as time, AVG(merchant_risk_score) as avg_merchant_risk FROM feature_vector WHERE ts > NOW() - INTERVAL '6 HOURS' GROUP BY window_start ORDER BY window_start",
+            "refId": "B"
+          }
+        ],
+        "title": "Feature Drift Monitoring (6hr)",
+        "type": "timeseries"
+      },
+      {
+        "datasource": "Prometheus",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "lineWidth": 1
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                }
+              ]
+            },
+            "unit": "short"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 32
+        },
+        "id": 14,
+        "options": {
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "expr": "scorer_ws_connections_total",
+            "legendFormat": "Active WS Connections",
+            "refId": "A"
+          }
+        ],
+        "title": "WebSocket Connections",
+        "type": "timeseries"
       }
     ],
     "refresh": "10s",
@@ -489,10 +834,10 @@
     "timezone": "browser",
     "title": "Anomaly Engine Overview",
     "uid": "anomaly-engine-overview",
-    "version": 1,
+    "version": 2,
     "weekStart": ""
   },
   "folderId": 0,
-  "message": "Created by hackathon setup",
+  "message": "Updated with decision metrics, model precision, FPR, feature drift",
   "overwrite": false
 }

@@ -1,0 +1,34 @@
+@"
+redpanda:
+  # Network
+  kafka_api:
+    - address: 0.0.0.0
+      port: 9092
+      name: internal
+    - address: 0.0.0.0
+      port: 19092
+      name: external
+  admin_api:
+    - address: 0.0.0.0
+      port: 9644
+  pandaproxy_api:
+    - address: 0.0.0.0
+      port: 8082
+  schema_registry:
+    - address: 0.0.0.0
+      port: 8081
+
+  # Dev mode settings
+  developer_mode: true
+  default_topic_partitions: 3
+  default_topic_replications: 1
+
+  # Performance (dev)
+  smp: 1
+  memory: 1G
+  reserve_memory: 0M
+  lock_memory: false
+
+  # Disable fsync for speed (dev only)
+  fsync: false
+"@ | Set-Content -Encoding utf8 redpanda/redpanda.yaml
