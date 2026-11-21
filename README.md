@@ -9,7 +9,7 @@ Hackathon MVP — scores transactions in <50ms.
 - Kafka (Redpanda), Prometheus, Grafana
 
 ## Run
-\\\ash
+\\\bash
 docker-compose up -d
 # Dashboard: http://localhost:5173
 # API: http://localhost:8000/docs
